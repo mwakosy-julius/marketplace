@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/", response_model=ContentResponse)
 async def create_tool(
-    tool_data: ContentCreate,
+    pipeline_data: ContentCreate,
     file: Optional[UploadFile] = File(None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -24,7 +24,7 @@ async def create_tool(
     # Handle file upload
     file_path = None
     if file:
-        upload_dir = f"uploads/tools/{current_user.id}"
+        upload_dir = f"uploads/pipelines/{current_user.id}"
         os.makedirs(upload_dir, exist_ok=True)
         file_path = f"{upload_dir}/{file.filename}"
 
@@ -32,27 +32,27 @@ async def create_tool(
             shutil.copyfileobj(file.file, buffer)
 
     # Create tool
-    tool = Content(
+    pipeline = Content(
         creator_id=current_user.id,
-        title=tool_data.title,
-        description=tool_data.description,
+        title=pipeline_data.title,
+        description=pipeline_data.description,
         content_type=ContentType.TOOL,
-        category=tool_data.category,
-        tags=tool_data.tags,
-        pricing_model=tool_data.pricing_model,
-        price=tool_data.price,
+        category=pipeline_data.category,
+        tags=pipeline_data.tags,
+        pricing_model=pipeline_data.pricing_model,
+        price=pipeline_data.price,
         file_path=file_path,
-        requirements=tool_data.requirements
+        requirements=pipeline_data.requirements
     )
 
-    db.add(tool)
+    db.add(pipeline)
     db.commit()
-    db.refresh(tool)
+    db.refresh(pipeline)
 
-    return tool
+    return pipeline
 
 @router.get("/", response_model=List[ContentResponse])
-async def list_tools(
+async def list_pipelines(
     skip: int = 0,
     limit: int = 50,
     category: Optional[str] = None,
@@ -63,12 +63,12 @@ async def list_tools(
     if category:
         query = query.filter(Content.category == category)
 
-    tools = query.offset(skip).limit(limit).all()
-    return tools
+    pipelines = query.offset(skip).limit(limit).all()
+    return pipelines
 
-@router.get("/{tool_id}", response_model=ContentResponse)
-async def get_tool(tool_id: int, db: Session = Depends(get_db)):
-    tool = db.query(Content).filter(Content.id == tool_id, Content.content_type == ContentType.TOOL).first()
-    if not tool:
-        raise HTTPException(status_code=404, detail="Tool not found")
-    return tool
+@router.get("/{pipeline_id}", response_model=ContentResponse)
+async def get_pipeline(pipeline_id: int, db: Session = Depends(get_db)):
+    pipeline = db.query(Content).filter(Content.id == pipeline_id, Content.content_type == ContentType.TOOL).first()
+    if not pipeline:
+        raise HTTPException(status_code=404, detail="Pipeline not found")
+    return pipeline

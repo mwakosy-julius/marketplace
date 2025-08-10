@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, JSON, Enum
-from sqlalchemy.relationship import relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
 import enum
@@ -69,7 +69,7 @@ class Content(Base):
     pricing_model = Column(Enum(PricingModel), default=PricingModel.FREE)
     price = Column(Float, default=0.0)
 
-    # Metadata
+    # Meta_data
     version = Column(String, default="1.0.0")
     file_path = Column(String)  # Path to uploaded files
     docker_image = Column(String)  # For containerized tools
@@ -112,7 +112,7 @@ class UsageRecord(Base):
     content_id = Column(Integer, ForeignKey("content.id"))
     usage_type = Column(String)  # download, execution, view
     cost = Column(Float, default=0.0)
-    metadata = Column(JSON)  # Execution details, parameters used
+    meta_data = Column(JSON)  # Execution details, parameters used
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="usage_records")

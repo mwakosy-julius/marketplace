@@ -6,7 +6,7 @@ from typing import List, Optional
 from database import get_db
 from models import Content, UsageRecord, User
 from schemas import ContentResponse, UsageRecordCreate
-from routers.auth import get_current_user
+from routes.auth import get_current_user
 
 router = APIRouter()
 

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from database import get_db
 from models import User, Content, UsageRecord, Transaction, UserRole
-from routers.auth import get_current_user
+from routes.auth import get_current_user
 
 router = APIRouter()
 

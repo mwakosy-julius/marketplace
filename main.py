@@ -7,7 +7,7 @@ import uvicorn
 
 from database import get_db, engine
 from models import Base
-from routers import auth, creators, tools, pipelines, data, marketplace, analytics
+from routes import auth, creators, tools, pipelines, data, marketplace, analytics
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -21,7 +21,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React frontend
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
